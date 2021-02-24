@@ -14,7 +14,6 @@ img {
 .wrapper {
     display: flex;
     flex-direction: row;
-    margin-top: 40px;
 }
 
 .footer {
@@ -23,7 +22,22 @@ img {
 
 .chat {
     border: solid black 2px;
+    margin-top: 30px;
     width: 50%;
-    height: 500px;
-    overflow-y: auto;
+    height: 700px;
+   overflow-y: auto;
+    background-image: url('http://fabrics-opt.ru/wp-content/uploads/2015/03/odnoton-220-biruza-1.jpg')
+}
+
+.textarea_style {
+    width: 900px;
+    height: 50px;
+    border: black solid;
+    background-image: url('http://fabrics-opt.ru/wp-content/uploads/2015/03/odnoton-220-biruza-1.jpg')
+}
+
+.buttonStyle  {
+    margin: 15px;
+    width: 66px;
+    height: 35px;
 }

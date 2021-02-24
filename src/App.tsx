@@ -1,4 +1,4 @@
-import React, {ChangeEvent, DetailedHTMLProps, HTMLAttributes, KeyboardEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent,KeyboardEvent, useEffect, useRef, useState} from 'react';
 import './App.css';
 
 type MessageEventType = {
@@ -8,6 +8,15 @@ type MessageEventType = {
     photo: string
 }
 
+
+
+function detectUrls(message: string) {
+    const urlR = /(https:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)/gi;
+    return message.replace(urlR, '<a href="$1">$1</a>')
+}
+
+console.log(detectUrls('blalba https://ggo.com/ses сам такой'))
+
 function App() {
 
     const messagesBlockRef = useRef<HTMLDivElement | null>(null);
@@ -15,16 +24,14 @@ function App() {
     const [ws, setWS] = useState<WebSocket | null>(null);
     const [users, setUsers] = useState<MessageEventType []>([]);
 
-
-
     const ohChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value)
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.charCode === 13) {
+        if (e.ctrlKey && e.charCode === 13 ) {
             sendMessage()
-            e.preventDefault()
+
         }
     }
 
@@ -32,14 +39,14 @@ function App() {
         if( messages === '') {
             return
         }
-        ws && ws.send(messages)
+        ws && ws.send(messages.trim())
         setMessage('')
     }
 
 
     useEffect(() => {
         let localWS = new WebSocket("wss://social-network.samuraijs.com/handlers/ChatHandler.ashx")
-        localWS.onmessage = (messageEvent) => {
+        localWS.onmessage = (messageEvent ) => {
             const newMessage = JSON.parse(messageEvent.data)
             setUsers(state => [...state,...newMessage])
             messagesBlockRef.current && messagesBlockRef.current.scrollTo(0, messagesBlockRef.current. scrollHeight)
@@ -50,7 +57,7 @@ function App() {
 
     return (
         <div className="App">
-            <div className={'chat'}  ref={messagesBlockRef}>
+            <div className={'chat'}  ref={messagesBlockRef} >
                 {
                     users.map((u, index) =>  {
                         return (
@@ -62,7 +69,7 @@ function App() {
                                 </div>
                                 <div>
                                     <h3>{u.userName}</h3>
-                                    <span> {u.message} </span>
+                                    <span dangerouslySetInnerHTML={{__html: detectUrls(u.message)}}></span>
                                 </div>
                             </div>
                         )
@@ -73,10 +80,10 @@ function App() {
                 <div className={'footer'}>
                     <div className={'wrapper'}>
                         <div>
-                            <textarea value={messages} onChange={ohChangeHandler} onKeyPress={onKeyPressHandler} autoFocus/>
+                            <textarea className={'textarea_style'} value={messages} onChange={ohChangeHandler} onKeyPress={onKeyPressHandler} autoFocus/>
                         </div>
                         <div>
-                            <button style={{margin: '15px'}} onClick={sendMessage}>Click</button>
+                            <button className={'buttonStyle'} onClick={sendMessage}>Send</button>
                         </div>
                     </div>
                 </div>
