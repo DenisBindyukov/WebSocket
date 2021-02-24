@@ -8,21 +8,17 @@ type MessageEventType = {
     photo: string
 }
 
-
-
-function detectUrls(message: string) {
-    const urlR = /(https:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)/gi;
-    return message.replace(urlR, '<a href="$1">$1</a>')
-}
-
-console.log(detectUrls('blalba https://ggo.com/ses сам такой'))
-
 function App() {
 
     const messagesBlockRef = useRef<HTMLDivElement | null>(null);
     const [messages, setMessage] = useState<string>('');
     const [ws, setWS] = useState<WebSocket | null>(null);
     const [users, setUsers] = useState<MessageEventType []>([]);
+
+    function detectUrls(message: string) {
+        const urlR = /(https:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?)/gi;
+        return message.replace(urlR, '<a href="$1">$1</a>')
+    }
 
     const ohChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value)
